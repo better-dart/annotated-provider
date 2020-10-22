@@ -1,3 +1,31 @@
+
+# flutter provider annotated:
+
+
+- [x] version: `v4.3.2`
+- [x] provider 源码分析
+
+
+## annotated log:
+
+- [annotated-log.md](./annotated-log.md)
+
+
+
+
+🔥
+
+🚀
+
+🚀
+
+🚀
+
+🚀
+
+🔥
+
+
 [English](https://github.com/rrousselGit/provider/blob/master/README.md) | [Português](https://github.com/rrousselGit/provider/blob/master/resources/translations/pt_br/README.md)
 
 # Black Lives Matter. [Support the Equal Justice Initiative.](https://support.eji.org/give/153413/#!/donation/checkout)
