@@ -13,6 +13,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  #
+  # todo: 关键依赖包
+  #
   nested: '>= 0.0.4 < 2.0.0'
   collection: ^1.14.0
 
