@@ -26,6 +26,12 @@ typedef DeferredStartListening<T, R> = VoidCallback Function(
 ///
 ///  - [InheritedProvider], a variant of this object where the provider object and
 ///    the created object are the same.
+///
+///
+/// todo:
+///
+///
+///
 class DeferredInheritedProvider<T, R> extends InheritedProvider<R> {
   /// Lazily create an object automatically disposed when
   /// [DeferredInheritedProvider] is removed from the tree.
@@ -46,6 +52,11 @@ class DeferredInheritedProvider<T, R> extends InheritedProvider<R> {
           child: child,
           lazy: lazy,
           builder: builder,
+
+          ///
+          ///
+          /// todo:
+          ///
           delegate: _CreateDeferredInheritedProvider(
             create: create,
             dispose: dispose,
@@ -86,13 +97,16 @@ abstract class _DeferredDelegate<T, R> extends _Delegate<R> {
   _DeferredDelegateState<T, R, _DeferredDelegate<T, R>> createState();
 }
 
-abstract class _DeferredDelegateState<T, R, W extends _DeferredDelegate<T, R>>
-    extends _DelegateState<R, W> {
+///
+///
+///
+abstract class _DeferredDelegateState<T, R, W extends _DeferredDelegate<T, R>> extends _DelegateState<R, W> {
   VoidCallback _removeListener;
 
   T get controller;
 
   R _value;
+
   @override
   R get value {
     // setState should be no-op inside startListening, as it's lazy-loaded
@@ -143,9 +157,7 @@ DeferredInheritedProvider(
 
   void setState(R value) {
     if (_hasValue) {
-      final shouldNotify = delegate.updateShouldNotify != null
-          ? delegate.updateShouldNotify(_value, value)
-          : _value != value;
+      final shouldNotify = delegate.updateShouldNotify != null ? delegate.updateShouldNotify(_value, value) : _value != value;
       if (shouldNotify) {
         element.markNeedsNotifyDependents();
       }
@@ -155,6 +167,9 @@ DeferredInheritedProvider(
   }
 }
 
+///
+///
+///
 class _CreateDeferredInheritedProvider<T, R> extends _DeferredDelegate<T, R> {
   _CreateDeferredInheritedProvider({
     @required this.create,
@@ -172,12 +187,15 @@ class _CreateDeferredInheritedProvider<T, R> extends _DeferredDelegate<T, R> {
   }
 }
 
-class _CreateDeferredInheritedProviderElement<T, R>
-    extends _DeferredDelegateState<T, R,
-        _CreateDeferredInheritedProvider<T, R>> {
+///
+///
+///
+///
+class _CreateDeferredInheritedProviderElement<T, R> extends _DeferredDelegateState<T, R, _CreateDeferredInheritedProvider<T, R>> {
   bool _didBuild = false;
 
   T _controller;
+
   @override
   T get controller {
     if (!_didBuild) {
@@ -186,10 +204,8 @@ class _CreateDeferredInheritedProviderElement<T, R>
       bool _debugPreviousIsInInheritedProviderUpdate;
 
       assert(() {
-        _debugPreviousIsInInheritedProviderCreate =
-            debugIsInInheritedProviderCreate;
-        _debugPreviousIsInInheritedProviderUpdate =
-            debugIsInInheritedProviderUpdate;
+        _debugPreviousIsInInheritedProviderCreate = debugIsInInheritedProviderCreate;
+        _debugPreviousIsInInheritedProviderUpdate = debugIsInInheritedProviderUpdate;
         return true;
       }());
 
@@ -202,10 +218,8 @@ class _CreateDeferredInheritedProviderElement<T, R>
         _controller = delegate.create(element);
       } finally {
         assert(() {
-          debugIsInInheritedProviderCreate =
-              _debugPreviousIsInInheritedProviderCreate;
-          debugIsInInheritedProviderUpdate =
-              _debugPreviousIsInInheritedProviderUpdate;
+          debugIsInInheritedProviderCreate = _debugPreviousIsInInheritedProviderCreate;
+          debugIsInInheritedProviderUpdate = _debugPreviousIsInInheritedProviderUpdate;
           return true;
         }());
       }
@@ -226,9 +240,7 @@ class _CreateDeferredInheritedProviderElement<T, R>
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     if (isLoaded) {
-      properties
-        ..add(DiagnosticsProperty('controller', controller))
-        ..add(DiagnosticsProperty('value', value));
+      properties..add(DiagnosticsProperty('controller', controller))..add(DiagnosticsProperty('value', value));
     } else {
       properties
         ..add(
@@ -272,8 +284,7 @@ class _ValueDeferredInheritedProvider<T, R> extends _DeferredDelegate<T, R> {
   }
 }
 
-class _ValueDeferredInheritedProviderState<T, R> extends _DeferredDelegateState<
-    T, R, _ValueDeferredInheritedProvider<T, R>> {
+class _ValueDeferredInheritedProviderState<T, R> extends _DeferredDelegateState<T, R, _ValueDeferredInheritedProvider<T, R>> {
   @override
   bool willUpdateDelegate(_ValueDeferredInheritedProvider<T, R> oldDelegate) {
     if (delegate.value != oldDelegate.value) {

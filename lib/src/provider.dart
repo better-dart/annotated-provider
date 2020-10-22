@@ -10,6 +10,7 @@ import 'package:flutter/scheduler.dart';
 import 'reassemble_handler.dart';
 
 part 'inherited_provider.dart';
+
 part 'deferred_inherited_provider.dart';
 
 /// A provider that merges multiple providers into a single linear widget tree.
@@ -45,6 +46,18 @@ part 'deferred_inherited_provider.dart';
 /// ```
 ///
 /// The widget tree representation of the two approaches are identical.
+///
+///
+/// todo:
+///   - 第三方依赖包: https://github.com/rrousselGit/nested
+///     - 也是该作者的写的
+///     - 该包代码很少, 单文件.
+///
+///   - Nested = StatelessWidget + SingleChildWidget
+///   - [Provider] vs [MultiProvider]
+///     - 上面注释, 给了2个示例. 对面差异.
+///     - 简单说: MultiProvider() 是多层嵌套的一种简写方式.
+///
 class MultiProvider extends Nested {
   /// Build a tree of providers from a list of [SingleChildWidget].
   MultiProvider({
@@ -125,6 +138,13 @@ class MultiProvider extends Nested {
 /// downcast the mock to the type of the mocked class.
 /// Otherwise, the type inference will resolve to `Provider<MockFoo>` instead of
 /// `Provider<Foo>`, which will cause `Provider.of<Foo>` to fail.
+///
+///
+/// //////////////////////////////////////////////////////////////////////
+///
+/// todo: 继承 [InheritedProvider]
+///
+///
 class Provider<T> extends InheritedProvider<T> {
   /// Creates a value, store it, and expose it to its descendants.
   ///
@@ -145,10 +165,7 @@ class Provider<T> extends InheritedProvider<T> {
           builder: builder,
           create: create,
           dispose: dispose,
-          debugCheckInvalidValueType: kReleaseMode
-              ? null
-              : (T value) =>
-                  Provider.debugCheckInvalidValueType?.call<T>(value),
+          debugCheckInvalidValueType: kReleaseMode ? null : (T value) => Provider.debugCheckInvalidValueType?.call<T>(value),
           child: child,
         );
 
@@ -161,6 +178,11 @@ class Provider<T> extends InheritedProvider<T> {
   /// Defaults to `(previous, next) => previous != next`.
   /// See [InheritedWidget.updateShouldNotify] for more information.
   /// {@endtemplate}
+  ///
+  ///
+  /// //////////////////////////////////////////////////////////////////////
+  ///
+  ///
   Provider.value({
     Key key,
     @required T value,
@@ -196,12 +218,18 @@ class Provider<T> extends InheritedProvider<T> {
   ///   },
   /// )
   /// ```
+  ///
+  ///
+  ///
+  /// //////////////////////////////////////////////////////////////////////
+  ///
+  ///
+  ///
+  ///
   static T of<T>(BuildContext context, {bool listen = true}) {
     assert(context != null);
     assert(
-      context.owner.debugBuilding ||
-          listen == false ||
-          debugIsInInheritedProviderUpdate,
+      context.owner.debugBuilding || listen == false || debugIsInInheritedProviderUpdate,
       '''
 Tried to listen to a value exposed with provider, from outside of the widget tree.
 
@@ -218,6 +246,12 @@ The context used was: $context
 ''',
     );
 
+    ///
+    ///
+    /// todo: 调用下面方法
+    ///
+    ///
+    ///
     final inheritedElement = _inheritedElementOf<T>(context);
 
     if (listen) {
@@ -227,6 +261,12 @@ The context used was: $context
     return inheritedElement.value;
   }
 
+  ///
+  ///
+  /// todo: [of] 方法调用此
+  ///
+  ///
+  ///
   static _InheritedProviderScopeElement<T> _inheritedElementOf<T>(
     BuildContext context,
   ) {
@@ -256,13 +296,11 @@ If you want to expose a variable that can be anything, consider changing
       // An InheritedProvider<T>'s update tries to obtain a parent provider of
       // the same type.
       context.visitAncestorElements((parent) {
-        inheritedElement = parent.getElementForInheritedWidgetOfExactType<
-            _InheritedProviderScope<T>>() as _InheritedProviderScopeElement<T>;
+        inheritedElement = parent.getElementForInheritedWidgetOfExactType<_InheritedProviderScope<T>>() as _InheritedProviderScopeElement<T>;
         return false;
       });
     } else {
-      inheritedElement = context.getElementForInheritedWidgetOfExactType<
-          _InheritedProviderScope<T>>() as _InheritedProviderScopeElement<T>;
+      inheritedElement = context.getElementForInheritedWidgetOfExactType<_InheritedProviderScope<T>>() as _InheritedProviderScopeElement<T>;
     }
 
     if (inheritedElement == null) {
@@ -340,6 +378,16 @@ void main() {
   };
 }
 
+///
+///
+///
+///
+///
+///
+///
+///
+///
+
 /// The error that will be thrown if [Provider.of] fails to find a [Provider]
 /// as an ancestor of the [BuildContext] used.
 class ProviderNotFoundException implements Exception {
@@ -406,6 +454,16 @@ https://stackoverflow.com/questions/tagged/flutter
 ''';
   }
 }
+
+///
+///
+///
+///
+///
+///
+///
+///
+///
 
 /// Exposes the [read] method.
 extension ReadContext on BuildContext {
@@ -540,10 +598,7 @@ extension ReadContext on BuildContext {
   ///   will make the widget tree rebuild when the obtained value changes.
   /// - [Locator], a typedef to make it easier to pass [read] to objects.
   T read<T>() {
-    assert(
-        debugIsInInheritedProviderCreate ||
-            (!debugDoingBuild && !debugIsInInheritedProviderUpdate),
-        '''
+    assert(debugIsInInheritedProviderCreate || (!debugDoingBuild && !debugIsInInheritedProviderUpdate), '''
 Tried to use `context.read<$T>` inside either a `build` method or the `update` callback of a provider.
 
 This is unsafe to do so. Instead, consider using `context.watch<$T>`.
@@ -576,12 +631,7 @@ extension WatchContext on BuildContext {
   /// - [ReadContext] and its `read` method, similar to [watch], but doesn't make
   ///   widgets rebuild if the value obtained changes.
   T watch<T>() {
-    assert(
-        widget is LayoutBuilder ||
-            widget is SliverWithKeepAliveWidget ||
-            debugDoingBuild ||
-            debugIsInInheritedProviderUpdate,
-        '''
+    assert(widget is LayoutBuilder || widget is SliverWithKeepAliveWidget || debugDoingBuild || debugIsInInheritedProviderUpdate, '''
 Tried to use `context.watch<$T>` outside of the `build` method or `update` callback of a provider.
 
 This is likely a mistake, as it doesn't make sense to rebuild a widget when the value

@@ -73,6 +73,11 @@ $error
 ///
 ///   * [Stream], which is listened by [StreamProvider].
 ///   * [StreamController], to create a [Stream].
+///
+///
+/// todo:
+///
+///
 class StreamProvider<T> extends DeferredInheritedProvider<Stream<T>, T> {
   /// Creates a [Stream] using `create` and subscribes to it.
   ///
@@ -174,6 +179,13 @@ $error
 /// See also:
 ///
 ///   * [Future], which is listened by [FutureProvider].
+///
+///
+///
+///
+/// todo:
+///
+///
 class FutureProvider<T> extends DeferredInheritedProvider<Future<T>, T> {
   /// Creates a [Future] from `create` and subscribes to it.
   ///

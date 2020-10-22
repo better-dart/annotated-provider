@@ -152,6 +152,11 @@ import 'selector.dart' show Selector;
 /// See also:
 ///   * [Selector], a [Consumer] that can filter updates.
 /// {@endtemplate}
+///
+///
+/// todo:
+///
+///
 class Consumer<T> extends SingleChildStatelessWidget {
   /// {@template provider.consumer.constructor}
   /// Consumes a [Provider<T>]
